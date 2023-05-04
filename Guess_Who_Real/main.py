@@ -13,7 +13,6 @@ class Game:
         self.menu()
         self.options()
 
-
     @property
     def get_player(self):
         return self.__player
@@ -43,9 +42,9 @@ class Game:
               "[2] - SERIES                                 \n"
               "[3] - EXIT                                   \n")
 
-        chosen = input("I choose: ")
+        chosen = int(input("I choose: "))
 
-        match int(chosen):
+        match chosen:
             case 1:
                 self.play_pais()
             case 2:
@@ -63,25 +62,24 @@ class Game:
         sleep(1)
 
         while not acertou and num_tip < 5:
-            print("\x1b[2J\x1b[1;1H", end="")
             palpite = input(f"\n\033[1;34mTip {num_tip + 1}\033[m: {dicas.get_dica_serie(serie, num_tip)}\nGuess: ")
-            print("\x1b[2J\x1b[1;1H", end="")
             acertou = palpite.capitalize() == serie.capitalize()
             if acertou:
-                self.pontos = 5 - num_tip
+                self.pontosTotal = 5 - num_tip
                 print(f"\nCongratulations, {self.__player}! You guessed it {serie}. ")
-                print(f"Won {self.pontos} points!")
+                print(f"Won {self.pontosTotal} points!")
+                self.pontos = self.pontos + self.pontosTotal
+                self.jogar_denovo()
             else:
                 print("Wrong guess. You lose one point. Try again.")
                 num_tip += 1
-                self.pontos = 5 - num_tip
+                self.pontosTotal = 5 - num_tip
                 print(f"Points: {self.pontos}")
 
         if num_tip == 5:
             print(
                 f"\n\033[1;31mGame Over, {self.__player}!\033[m \nYou don't guess the country \033[1;33m{serie}\033[m.\n")
             self.jogar_denovo()
-
 
     def play_pais(self):
             pais = Pais.get_pais()
@@ -93,29 +91,31 @@ class Game:
             sleep(1)
 
             while not acertou and num_dica < 5:
-                print("\x1b[2J\x1b[1;1H", end="")
                 palpite = input(f"\n\033[1;34mTip {num_dica + 1}\033[m: {dicas.get_dica(pais, num_dica)}\nGuess: ")
-                print("\x1b[2J\x1b[1;1H", end="")
                 acertou = palpite.capitalize() == pais.capitalize()
                 if acertou:
-                    self.pontos = 5 - num_dica
+                    self.pontosTotal = 5 - num_dica
                     print(f"\nCongratulations, {self.__player}! You guessed it {pais}. ")
-                    print(f"Won {self.pontos} points!")
+                    print(f"Won {self.pontosTotal} points!")
+                    self.pontos = self.pontos + self.pontosTotal
+                    self.jogar_denovo()
                 else:
                     print("Wrong guess. You lose one point. Try again.")
                     num_dica += 1
-                    self.pontos = 5 - num_dica
-                    print(f"Points: {self.pontos}")
+                    self.pontosTotal = 5 - num_dica
+                    print(f"Points: {self.pontosTotal}")
 
             if num_dica == 5:
                 print(f"\n\033[1;31mGame Over, {self.__player}!\033[m \nYou don't guess the country \033[1;33m{pais}\033[m.\n")
+                self.pontos = self.pontos + self.pontosTotal
                 self.jogar_denovo()
 
     def jogar_denovo(self):
-        op = input("Do you wanna play again? (Y/N) ").upper()
+        op = input("\nDo you wanna play again? (Y/N) ").upper()
         if op == 'Y':
             self.options()
         else:
+            print(f"\nYou did {self.pontos} points!!")
             print("Exiting...")
             sleep(2)
             exit()
