@@ -1,7 +1,7 @@
 import random
 
 
-class Pais:
+class Pais():
     _paises = ["Brasil", "Estados Unidos", "Itália", "México", "Coreia do Sul"]
 
     @staticmethod
